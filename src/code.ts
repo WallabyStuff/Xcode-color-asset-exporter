@@ -75,6 +75,6 @@ async function startProgress(lightTag: string, darkTag: string) {
 
 function removeTag(name: string, tag: string): string {
   const pattern = RegExp(`\\[(${tag})\\]`);
-  const result = name.replace(pattern, "");
-  return result;
+  let result = name.replace(pattern, "");
+  return result.trim();
 };

@@ -86,6 +86,7 @@ function App() {
     for (let key of Object.keys(colorGroups))  {
       let value = colorGroups[key];
       let paths = key.split("/");
+      paths = paths.map((path) => path.trim());
 
       paths.forEach((_, index) => {
         if (index == paths.length - 1) {
