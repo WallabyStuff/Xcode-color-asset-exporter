@@ -1,0 +1,8 @@
+{
+  "name": "Xcode color asset exporter",
+  "id": "1149213335926840353",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"]
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": ["es2017", "dom"],
+    "target": "es6",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma",
+      "./@types",
+    ]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
