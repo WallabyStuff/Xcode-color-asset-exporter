@@ -31,7 +31,6 @@ or
 
 **2. Run the plugin in Figma** <br>
 Fill out the tag names with your tag names or just leave them empty if you're using tag names by default `[day]`, `[night]`. <br>
-<img width="935" alt="image" src="https://user-images.githubusercontent.com/63496607/189517061-f59da0b7-bd36-49b6-885e-16035369c64c.png">
 
 
 <br>
