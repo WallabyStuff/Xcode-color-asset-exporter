@@ -1,8 +1,14 @@
 # Xcode-color-asset-exporter
+<a><img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"></a>
+<a><img src="https://img.shields.io/badge/version-1.0.0-green.svg"></a>
+<a href="https://choosealicense.com/licenses/mit/"><img src="https://img.shields.io/cocoapods/l/SafeAreaBrush.svg?style=flat"></img></a>
+
 This plugin automatically exports color styles to assets which can be adopted in Xcode project. <br>
 Also supports dark appearance colors 🌙.
 
 **NOTE**: It doesn't support gradient colors like Xcode does.
+
+<br>
 
 <img src="https://user-images.githubusercontent.com/63496607/189515936-5e4f36d9-2638-4738-b95a-a3ff41377635.png" width="100%"></img>
 
