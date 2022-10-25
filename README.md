@@ -12,8 +12,11 @@ Also supports dark appearance colors 🌙.
 
 <img src="https://user-images.githubusercontent.com/63496607/189515936-5e4f36d9-2638-4738-b95a-a3ff41377635.png" width="100%"></img>
 
+<a href="https://www.figma.com/community/plugin/1150751463239037438">Check out on Figma community</a>
 
 <br>
+<br>
+
 
 How to use?
 ---
