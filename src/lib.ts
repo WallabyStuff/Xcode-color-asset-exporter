@@ -3,7 +3,7 @@ export interface ColorGroupType {
   dark?: SolidPaint
 } 
 
-export interface ColorGroupSType {
+export interface ColorGroupsType {
   [name: string]: ColorGroupType
 }
 

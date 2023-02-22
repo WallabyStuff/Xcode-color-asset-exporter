@@ -6,7 +6,7 @@ figma.ui.resize(320, 480);
 
 figma.ui.onmessage = (msg) => {
   if (msg.type === "create-assets") {
-    figma.notify("Start process.. 🚀")
+    figma.notify("🚀 Start processing..")
     startProgress(msg.lightTag, msg.darkTag)
       .then(() => {
         figma.notify("Done");
@@ -37,21 +37,21 @@ async function startProgress(lightTag: string, darkTag: string) {
     
     if (localPaint.name.includes(lightTag)) {
       // 🌞 Light appearance
-      const actualName = removeTag(localPaint.name, lightTag);
-      if (colorGroups[actualName]) {
-        colorGroups[actualName].light = paint
+      const colorNameWithoutTag = removeTag(localPaint.name, lightTag);
+      if (colorGroups[colorNameWithoutTag]) {
+        colorGroups[colorNameWithoutTag].light = paint
       } else {
-        colorGroups[actualName] = {
+        colorGroups[colorNameWithoutTag] = {
           light: paint
         }
       }
     } else if (localPaint.name.includes(darkTag)) {
       // 🌙 Dark appearance
-      const actualName = removeTag(localPaint.name, darkTag);
-      if (colorGroups[actualName]) {
-        colorGroups[actualName].dark = paint
+      const colorNameWithoutTag = removeTag(localPaint.name, darkTag);
+      if (colorGroups[colorNameWithoutTag]) {
+        colorGroups[colorNameWithoutTag].dark = paint
       } else {
-        colorGroups[actualName] = {
+        colorGroups[colorNameWithoutTag] = {
           dark: paint
         }
       }
