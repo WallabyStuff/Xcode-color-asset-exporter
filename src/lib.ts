@@ -12,7 +12,10 @@ export const ColorContentsEntry = {
   "info" : {
     "author" : "xcode-color-asset-exporter",
     "version" : 1
-  }
+  },
+  "properties" : {
+     "provides-namespace" : false
+  },
 }
 
 export const ColorEntry = {
