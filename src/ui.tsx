@@ -5,23 +5,29 @@ import { css } from "@emotion/react";
 import JSZip from "jszip";
 import folderContentsJSON, { ColorContentsEntry, ColorEntry, DarkAppearanceEntry } from "./lib";
 import { ColorGroupType } from "./lib";
-import { textInputStyle } from "./Components/textInputStyle";
-import { textInputHeaderStyle } from "./Components/textInputHeaderStyle";
-import { accentButtonStyle } from "./Components/accentButtonStyle";
-import { borderButtonStyle } from "./Components/borderButtonStyle";
+import { textInputStyle } from "./components/textInputStyle";
+import { textInputHeaderStyle } from "./components/textInputHeaderStyle";
+import { accentButtonStyle } from "./components/accentButtonStyle";
+import { borderButtonStyle } from "./components/borderButtonStyle";
+import { checkboxStyle } from "./components/checkboxStyle";
 import { produce } from "immer";
-
 
 function App() {
   const lightAppearanceTagName = React.useRef<HTMLInputElement>(null);
   const darkAppearanceTagName = React.useRef<HTMLInputElement>(null);
 
   const defaultLightTag = "day";
-  const defaultDarkTag = "night";
+  const defaultDarkTag = "night"
+  
+  const [providesNamespace, setProvidesNamespace] = React.useState(false);
+  const handleCheckboxChange = (event) => {
+    setProvidesNamespace(event.target.checked);
+  };
 
   const onCreate = () => {
     const lightTag = lightAppearanceTagName.current?.value || defaultLightTag;
     const darkTag = darkAppearanceTagName.current?.value || defaultDarkTag;
+
     parent.postMessage(
       { pluginMessage: { type: "create-assets", lightTag, darkTag } },
       "*"
@@ -32,31 +38,32 @@ function App() {
     parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
   };
 
-  function colorContentsFactory(colorGroup: ColorGroupType) {
+  function colorContentsFactory(colorGroup: ColorGroupType, providesNamespace: boolean) {
     if (colorGroup.light && colorGroup.dark) {
       let colorComponentsEntry = ColorContentsEntry;
       let lightColorEntry = ColorEntry;
       let darkColorEntry = ColorEntry;
-      
+
       lightColorEntry = produce(lightColorEntry, (drafter) => {
         drafter.color.components.red = formatNumber(colorGroup.light.color.r);
         drafter.color.components.green = formatNumber(colorGroup.light.color.g);
         drafter.color.components.blue = formatNumber(colorGroup.light.color.b);
         drafter.color.components.alpha = formatNumber(colorGroup.light.opacity);
-      }), 
-      
-      darkColorEntry = produce(darkColorEntry, (drafter) => {
-        drafter.color.components.red = formatNumber(colorGroup.dark.color.r);
-        drafter.color.components.green = formatNumber(colorGroup.dark.color.g);
-        drafter.color.components.blue = formatNumber(colorGroup.dark.color.b);
-        drafter.color.components.alpha = formatNumber(colorGroup.dark.opacity);
-      });
+      }),
+
+        darkColorEntry = produce(darkColorEntry, (drafter) => {
+          drafter.color.components.red = formatNumber(colorGroup.dark.color.r);
+          drafter.color.components.green = formatNumber(colorGroup.dark.color.g);
+          drafter.color.components.blue = formatNumber(colorGroup.dark.color.b);
+          drafter.color.components.alpha = formatNumber(colorGroup.dark.opacity);
+        });
 
       colorComponentsEntry = produce(colorComponentsEntry, (drafter) => {
         drafter.colors.push(lightColorEntry);
         drafter.colors.push({ ...DarkAppearanceEntry, ...darkColorEntry });
+        drafter.properties["provides-namespace"] = providesNamespace;
       });
-      
+
       return colorComponentsEntry
     } else {
       let colorComponentsEntry = ColorContentsEntry;
@@ -72,18 +79,19 @@ function App() {
 
       colorComponentsEntry = produce(colorComponentsEntry, (drafter) => {
         drafter.colors.push(singleColorEntry);
+        drafter.properties["provides-namespace"] = providesNamespace;
       });
-      
+
       return colorComponentsEntry
     }
   };
 
-  function zipColors(zip: JSZip, colorGroups: ColorGroupType) {
+  function zipColors(zip: JSZip, colorGroups: ColorGroupType, providesNamespace: boolean) {
     // Make the root Contents.json
     var blob = new Blob([folderContentsJSON], { type: "application/json" });
     zip.folder("./").file(`Contents.json`, blob, { base64: true })
 
-    for (let key of Object.keys(colorGroups))  {
+    for (let key of Object.keys(colorGroups)) {
       let value = colorGroups[key];
       let paths = key.split("/");
       paths = paths.map((path) => path.trim());
@@ -92,7 +100,7 @@ function App() {
         if (index == paths.length - 1) {
           // Make a color contents.json
           let path = `/${key}.colorset`
-          let json = colorContentsFactory(value);
+          let json = colorContentsFactory(value, providesNamespace);
           let colorContentsJSON = JSON.stringify(json, null, 2);
           var blob = new Blob([colorContentsJSON], { type: "application/json" });
           zip.folder(path).file(`Contents.json`, blob, { base64: true })
@@ -117,7 +125,7 @@ function App() {
     return new Promise<void>((resolve) => {
       let zip = new JSZip();
 
-      zipColors(zip, colorGroups)
+      zipColors(zip, colorGroups, providesNamespace)
 
       zip.generateAsync({ type: "blob" }).then((content: Blob) => {
         const blobURL = window.URL.createObjectURL(content);
@@ -147,7 +155,7 @@ function App() {
             margin-bottom: 40px;
             text-align: left;
           `
-      }>
+        }>
         <h3>Xcode color asset exporter</h3>
       </header>
       <div css={
@@ -158,7 +166,7 @@ function App() {
           gap: 12px;
           width: 100%;
           height: auto;
-          margin-bottom: 40px;
+          margin-bottom: 24px;
         `
       }>
         <div css={
@@ -168,7 +176,7 @@ function App() {
             flex-grow: 1;
           `
         }>
-          <label 
+          <label
             htmlFor="input"
             css={
               css`
@@ -179,7 +187,7 @@ function App() {
             }
           >🌞 Light appearance tag
           </label>
-          <input 
+          <input
             id="input"
             type="text"
             ref={lightAppearanceTagName}
@@ -200,7 +208,7 @@ function App() {
             flex-grow: 1;
           `
         }>
-          <label 
+          <label
             htmlFor="input"
             css={
               css`
@@ -211,7 +219,7 @@ function App() {
             }
           >🌙 Dark appearance tag
           </label>
-          <input 
+          <input
             id="input"
             type="text"
             ref={darkAppearanceTagName}
@@ -230,14 +238,40 @@ function App() {
         css`
           display: flex;
           flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          height: 24px;
+          margin-bottom: 52px;
+        `
+      }>
+        <input
+          type="checkbox"
+          checked={providesNamespace}
+          onChange={handleCheckboxChange}
+          css={
+            css`
+              ${checkboxStyle}
+            `
+          }>
+        </input>
+        <label>
+          Provides namespace
+        </label>
+      </div>
+      <div css={
+        css`
+          display: flex;
+          flex-direction: row;
           justify-content: center;
           gap: 8px;
           width: auto;
           height: 44px;
         `
       }>
-        <button 
-          className="brand" 
+        <button
+          className="brand"
           onClick={onCreate}
           css={
             css`
@@ -249,7 +283,7 @@ function App() {
         >
           Create
         </button>
-        <button 
+        <button
           onClick={onCancel}
           css={
             css`
